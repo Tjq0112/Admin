@@ -1,27 +1,43 @@
+import 'package:admin/Login.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_database/firebase_database.dart';
-
-import 'Login.dart';
 import 'Menu.dart';
 import 'Schedule.dart';
+import 'firebase_options.dart';
 
-void main() async{
-  //WidgetsFlutterBinding.ensureInitialized();
-  //await Firebase.initializeApp();
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Smart Waste',
+      theme: ThemeData(
+
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        useMaterial3: true,
+      ),
+      home: const Schedule(),
+    );
+  }
   /*Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(centerTitle:true, title: Text('Voting Panel')),
-      body: _buildBody(context),
+    return MaterialApp(
+      home: Material(
+        child: Scaffold(
+          appBar: AppBar(centerTitle: true, title: const Text('Voting Panel')),
+          body: _buildBody(context),
+        ),
+      ),
     );
   }
 
@@ -30,7 +46,7 @@ class MyApp extends StatelessWidget {
       stream: FirebaseFirestore.instance.collection('Admin').snapshots(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
-          return LinearProgressIndicator();
+          return const LinearProgressIndicator();
         }
         if (snapshot.hasData) {
           List docs = snapshot.data!.docs;
@@ -60,21 +76,29 @@ class MyApp extends StatelessWidget {
         ),
         child: ListTile(
           title: Text(record.username),
-          trailing: Text(record.votes.toString()),
+          trailing: Text(record.password.toString()),
           onTap: () => print(record),
         ),
       ),
     );
-  }*/
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Smart Waste',
-      theme: ThemeData(
-
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      home: const Schedule(),
-    );
   }
+}
+
+class Record {
+  final String username;
+  final String password;
+  final DocumentReference reference;
+
+  Record.fromMap(Map<String, dynamic> map, {required this.reference})
+      : assert(map['username'] != null),
+        assert(map['password'] != null),
+        username = map['username'],
+        password = map['password'];
+
+  Record.fromSnapshot(DocumentSnapshot snapshot)
+      : this.fromMap(snapshot.data() as Map<String, dynamic>,
+      reference: snapshot.reference);
+
+  @override
+  String toString() => "Record<$username:$password>";*/
 }
