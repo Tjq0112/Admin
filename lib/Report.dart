@@ -1,16 +1,25 @@
 import 'package:flutter/material.dart';
 
+import 'Driver.dart';
 import 'Login.dart';
 import 'Schedule.dart';
+import 'Setting.dart';
 
 class Report extends StatefulWidget {
-  const Report({super.key});
+  final String username;
+  final String password;
+
+  Report({required this.username, required this.password});
 
   @override
-  State<Report> createState() => _ReportState();
+  State<Report> createState() => _ReportState(username, password);
 }
 
 class _ReportState extends State<Report> {
+  String username;
+  String password;
+
+  _ReportState(this.username, this.password);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,7 +42,7 @@ class _ReportState extends State<Report> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => Schedule()
+                                builder: (context) => Schedule(username: username,password: password)
                             ),
                           );
                         },
@@ -44,11 +53,22 @@ class _ReportState extends State<Report> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => Report()
+                                builder: (context) => Report(username: username,password: password)
                             ),
                           );
                         },
                         child: const MenuAcceleratorLabel('&Report'),
+                      ),
+                      MenuItemButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => Driver(username: username,password: password)
+                            ),
+                          );
+                        },
+                        child: const MenuAcceleratorLabel('&Manage Driver'),
                       ),
                       MenuItemButton(
                         onPressed: () => showDialog<String>(
@@ -76,6 +96,19 @@ class _ReportState extends State<Report> {
                         ),
                         child: const MenuAcceleratorLabel('&Logout'),
                       ),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: MenuItemButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => Setting(username: username,password: password)
+                              ),
+                            );
+                          },
+                          child: const MenuAcceleratorLabel('Setting'),
+                        ),),
                     ],
 
                   ),

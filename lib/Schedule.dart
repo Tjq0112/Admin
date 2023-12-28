@@ -2,20 +2,28 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:admin/model/bin.dart';
+import 'Driver.dart';
 import 'Login.dart';
 import 'Report.dart';
-import '../model/bin.dart';
+import 'Setting.dart';
 
 class Schedule extends StatefulWidget {
-  const Schedule({super.key});
+  final String username;
+  final String password;
+
+  Schedule({required this.username, required this.password});
 
   @override
-  State<Schedule> createState() => _ScheduleState();
+  State<Schedule> createState() => _ScheduleState(username, password);
 }
 
 class _ScheduleState extends State<Schedule> {
   DateTime dates = DateTime(2024, 1, 1);
   final TextEditingController dateController = TextEditingController();
+  String username;
+  String password;
+  _ScheduleState(this.username,this.password);
+  List<String> a = ['B01', 'B02', 'B03'];
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +47,7 @@ class _ScheduleState extends State<Schedule> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => Schedule()
+                                builder: (context) => Schedule(username: username,password: password)
                             ),
                           );
                         },
@@ -50,44 +58,62 @@ class _ScheduleState extends State<Schedule> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => Report()
+                                builder: (context) => Report(username: username,password: password)
                             ),
                           );
                         },
                         child: const MenuAcceleratorLabel('&Report'),
                       ),
                       MenuItemButton(
-                        onPressed: () =>
-                            showDialog<String>(
-                              context: context,
-                              builder: (BuildContext context) =>
-                                  AlertDialog(
-                                    title: const Text('Logout'),
-                                    content: const Text(
-                                        'Do you sure you want to logout?'),
-                                    actions: <Widget>[
-                                      TextButton(
-                                        onPressed: () {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    LoginScreen()
-                                            ),
-                                          );
-                                        },
-                                        child: const Text('Sure'),
-                                      ),
-                                      TextButton(
-                                        onPressed: () =>
-                                            Navigator.pop(context, 'Cancel'),
-                                        child: const Text('Cancel'),
-                                      ),
-                                    ],
-                                  ),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => Driver(username: username,password: password)
                             ),
+                          );
+                        },
+                        child: const MenuAcceleratorLabel('&Manage Driver'),
+                      ),
+                      MenuItemButton(
+                        onPressed: () => showDialog<String>(
+                          context: context,
+                          builder: (BuildContext context) => AlertDialog(
+                            title: const Text('Logout'),
+                            content: const Text('Do you sure you want to logout?'),
+                            actions: <Widget>[
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => LoginScreen()
+                                    ),
+                                  );},
+                                child: const Text('Sure'),
+                              ),
+                              TextButton(
+                                onPressed: () => Navigator.pop(context, 'Cancel'),
+                                child: const Text('Cancel'),
+                              ),
+                            ],
+                          ),
+                        ),
                         child: const MenuAcceleratorLabel('&Logout'),
                       ),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: MenuItemButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => Setting(username: username,password: password)
+                              ),
+                            );
+                          },
+                          child: const MenuAcceleratorLabel('Setting'),
+                        ),),
                     ],
 
                   ),
@@ -165,8 +191,6 @@ class _ScheduleState extends State<Schedule> {
                 },
               ),
             )
-
-
           ],
         )
     );
