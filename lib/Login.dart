@@ -121,7 +121,7 @@ class _LoginScreenState extends State<LoginScreen> {
         setState(() {
           _isSecuredPassword = !_isSecuredPassword;
         });
-      }, icon: _isSecuredPassword ? Icon(Icons.visibility) : Icon(Icons.visibility_off));
+      }, icon: _isSecuredPassword ? Icon(Icons.visibility_off) : Icon(Icons.visibility));
     }
   }
 

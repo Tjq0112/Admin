@@ -1,3 +1,5 @@
+import 'package:admin/model/driver1.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 import 'Login.dart';
@@ -18,6 +20,10 @@ class Driver extends StatefulWidget {
 class _DriverState extends State<Driver> {
   String username;
   String password;
+  TextEditingController nameController = TextEditingController();
+  TextEditingController usernameController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  bool _isSecuredPassword = true;
 
   _DriverState(this.username, this.password);
   @override
@@ -25,7 +31,7 @@ class _DriverState extends State<Driver> {
     return Scaffold(
         appBar: AppBar(
           title: new Center(
-              child: const Text('Main Menu', style: TextStyle(fontSize: 50),)),
+              child: const Text('Manage Driver', style: TextStyle(fontSize: 50),)),
           automaticallyImplyLeading: false,
         ),
         body:
@@ -116,11 +122,83 @@ class _DriverState extends State<Driver> {
                 ),
               ],
             ),
-            Scaffold(
-
+            Column(
+              children: [
+                Text("Add new driver",style: TextStyle(
+                    fontSize: 30
+                ),),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(250.0, 40.0, 250.0, 40.0),
+                  child: TextField(
+                    controller: nameController,
+                    decoration: InputDecoration(
+                      labelText: 'Enter driver name',
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(250.0, 40.0, 250.0, 40.0),
+                  child: TextField(
+                    controller: usernameController,
+                    decoration: InputDecoration(
+                      labelText: 'Enter driver username',
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(250.0, 40.0, 250.0, 40.0),
+                  child: TextField(
+                    obscureText: _isSecuredPassword,
+                    controller: passwordController,
+                    decoration: InputDecoration(
+                      labelText: 'Enter driver password',
+                      suffixIcon: togglePassword(),
+                    ),
+                  ),
+                ),
+                ElevatedButton(
+                    onPressed: (){
+                      String d_name = nameController.text;
+                      String d_username = usernameController.text;
+                      String d_password = passwordController.text;
+                      
+                      final driver = Driver1(
+                          d_name: d_name, 
+                          d_username: d_username, 
+                          d_password: d_password
+                      );
+                      
+                      createDriver(driver);
+                    },
+                    child: const Text("Add")
+                )
+              ],
             )
           ],
         )
     );
   }
+  Widget togglePassword(){
+    return IconButton(onPressed: (){
+      setState(() {
+        _isSecuredPassword = !_isSecuredPassword;
+      });
+    }, icon: _isSecuredPassword ? Icon(Icons.visibility_off) : Icon(Icons.visibility));
+  }
+  
+  Future createDriver(Driver1 driver) async{
+    final docDriver = FirebaseFirestore.instance.collection('Driver').doc();
+    driver.id = docDriver.id;
+
+    final json = driver.toJson();
+    await docDriver.set(json);
+
+    const snackBar = SnackBar(
+      content: Text('Driver Added!'),
+    );
+
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+
+
 }
