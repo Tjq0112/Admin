@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'Driver.dart';
 import 'Login.dart';
 import 'Menu.dart';
-import 'Report.dart';
 import 'Schedule.dart';
 
 class Setting extends StatefulWidget {
@@ -62,22 +61,22 @@ class _SettingState extends State<Setting> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => Report(username: username,password: password)
+                                builder: (context) => Driver(username: username,password: password)
                             ),
                           );
                         },
-                        child: const MenuAcceleratorLabel('&Report'),
+                        child: const MenuAcceleratorLabel('&Manage Driver'),
                       ),
                       MenuItemButton(
                         onPressed: () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => Driver(username: username,password: password)
+                                builder: (context) => Setting(username: username,password: password)
                             ),
                           );
                         },
-                        child: const MenuAcceleratorLabel('&Manage Driver'),
+                        child: const MenuAcceleratorLabel('Setting'),
                       ),
                       MenuItemButton(
                         onPressed: () => showDialog<String>(
@@ -105,19 +104,6 @@ class _SettingState extends State<Setting> {
                         ),
                         child: const MenuAcceleratorLabel('&Logout'),
                       ),
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: MenuItemButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => Setting(username: username,password: password)
-                              ),
-                            );
-                          },
-                          child: const MenuAcceleratorLabel('Setting'),
-                        ),),
                     ],
 
                   ),
@@ -127,7 +113,6 @@ class _SettingState extends State<Setting> {
             ),
 
             Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text("Change username or password",
                 style: TextStyle(
@@ -135,7 +120,7 @@ class _SettingState extends State<Setting> {
                 ),),
 
                 Padding(
-                  padding: const EdgeInsets.all(20.0),
+                  padding: const EdgeInsets.fromLTRB(250.0, 20.0, 250.0, 20.0),
                   child:
                   TextField(
                     controller: usernameController,
@@ -145,7 +130,7 @@ class _SettingState extends State<Setting> {
                   ),
                 ),
                 Padding(
-                    padding: const EdgeInsets.all(16.0),
+                    padding: const EdgeInsets.fromLTRB(250.0, 20.0, 250.0, 20.0),
                     child: TextField(
                       obscureText: _isSecuredPassword,
                       controller: passwordController,
@@ -156,7 +141,7 @@ class _SettingState extends State<Setting> {
                     )
                 ),
                 Padding(
-                    padding: const EdgeInsets.all(16.0),
+                    padding: const EdgeInsets.fromLTRB(250.0, 20.0, 250.0, 20.0),
                     child: TextField(
                       controller: newUsernameController,
                       decoration: InputDecoration(
@@ -165,7 +150,7 @@ class _SettingState extends State<Setting> {
                     )
                 ),
                 Padding(
-                    padding: const EdgeInsets.all(16.0),
+                    padding: const EdgeInsets.fromLTRB(250.0, 20.0, 250.0, 20.0),
                     child: TextField(
                       obscureText: _isSecuredPassword,
                       controller: newPasswordController,
@@ -176,7 +161,7 @@ class _SettingState extends State<Setting> {
                     )
                 ),
                 Padding(
-                    padding: const EdgeInsets.all(16.0),
+                    padding: const EdgeInsets.fromLTRB(250.0, 20.0, 250.0, 20.0),
                     child: TextField(
                       obscureText: _isSecuredPassword,
                       controller: newPasswordController1,
@@ -187,6 +172,7 @@ class _SettingState extends State<Setting> {
                     )
                 ),
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     ElevatedButton(
                         onPressed: () {

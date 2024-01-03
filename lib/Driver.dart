@@ -3,7 +3,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 import 'Login.dart';
-import 'Report.dart';
 import 'Schedule.dart';
 import 'Setting.dart';
 
@@ -23,6 +22,8 @@ class _DriverState extends State<Driver> {
   TextEditingController nameController = TextEditingController();
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  TextEditingController icController = TextEditingController();
+  TextEditingController phoneNumberController = TextEditingController();
   bool _isSecuredPassword = true;
 
   _DriverState(this.username, this.password);
@@ -59,22 +60,22 @@ class _DriverState extends State<Driver> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => Report(username: username,password: password)
+                                builder: (context) => Driver(username: username,password: password)
                             ),
                           );
                         },
-                        child: const MenuAcceleratorLabel('&Report'),
+                        child: const MenuAcceleratorLabel('&Manage Driver'),
                       ),
                       MenuItemButton(
                         onPressed: () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => Driver(username: username,password: password)
+                                builder: (context) => Setting(username: username,password: password)
                             ),
                           );
                         },
-                        child: const MenuAcceleratorLabel('&Manage Driver'),
+                        child: const MenuAcceleratorLabel('Setting'),
                       ),
                       MenuItemButton(
                         onPressed: () => showDialog<String>(
@@ -102,19 +103,6 @@ class _DriverState extends State<Driver> {
                         ),
                         child: const MenuAcceleratorLabel('&Logout'),
                       ),
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: MenuItemButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => Setting(username: username,password: password)
-                              ),
-                            );
-                          },
-                          child: const MenuAcceleratorLabel('Setting'),
-                        ),),
                     ],
 
                   ),
@@ -128,7 +116,7 @@ class _DriverState extends State<Driver> {
                     fontSize: 30
                 ),),
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(250.0, 40.0, 250.0, 40.0),
+                  padding: const EdgeInsets.fromLTRB(250.0, 20.0, 250.0, 20.0),
                   child: TextField(
                     controller: nameController,
                     decoration: InputDecoration(
@@ -137,7 +125,25 @@ class _DriverState extends State<Driver> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(250.0, 40.0, 250.0, 40.0),
+                  padding: const EdgeInsets.fromLTRB(250.0, 20.0, 250.0, 20.0),
+                  child: TextField(
+                    controller: icController,
+                    decoration: InputDecoration(
+                      labelText: 'Enter driver IC',
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(250.0, 20.0, 250.0, 20.0),
+                  child: TextField(
+                    controller: phoneNumberController,
+                    decoration: InputDecoration(
+                      labelText: 'Enter driver phone number',
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(250.0, 20.0, 250.0, 20.0),
                   child: TextField(
                     controller: usernameController,
                     decoration: InputDecoration(
@@ -146,7 +152,7 @@ class _DriverState extends State<Driver> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(250.0, 40.0, 250.0, 40.0),
+                  padding: const EdgeInsets.fromLTRB(250.0, 20.0, 250.0, 20.0),
                   child: TextField(
                     obscureText: _isSecuredPassword,
                     controller: passwordController,
@@ -156,21 +162,30 @@ class _DriverState extends State<Driver> {
                     ),
                   ),
                 ),
-                ElevatedButton(
-                    onPressed: (){
-                      String d_name = nameController.text;
-                      String d_username = usernameController.text;
-                      String d_password = passwordController.text;
-                      
-                      final driver = Driver1(
-                          d_name: d_name, 
-                          d_username: d_username, 
-                          d_password: d_password
-                      );
-                      
-                      createDriver(driver);
-                    },
-                    child: const Text("Add")
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ElevatedButton(
+                        onPressed: (){
+                          String d_name = nameController.text;
+                          String d_username = usernameController.text;
+                          String d_password = passwordController.text;
+                          String d_icNumber = icController.text;
+                          String d_phoneNumber = phoneNumberController.text;
+
+                          final driver = Driver1(
+                              d_name: d_name,
+                              d_username: d_username,
+                              d_password: d_password,
+                              d_icNumber: d_icNumber,
+                              d_phoneNumber: d_phoneNumber,
+                          );
+
+                          createDriver(driver);
+                        },
+                        child: const Text("Add")
+                    ),
+                  ],
                 )
               ],
             )

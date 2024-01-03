@@ -4,7 +4,6 @@ import 'dart:async';
 import 'package:admin/model/bin.dart';
 import 'Driver.dart';
 import 'Login.dart';
-import 'Report.dart';
 import 'Setting.dart';
 
 class Schedule extends StatefulWidget {
@@ -18,12 +17,13 @@ class Schedule extends StatefulWidget {
 }
 
 class _ScheduleState extends State<Schedule> {
-  DateTime dates = DateTime(2024, 1, 1);
+  DateTime dates = DateTime(2023, 12, 18);
+  String date1 = "2023-12-18";
   final TextEditingController dateController = TextEditingController();
   String username;
   String password;
+
   _ScheduleState(this.username,this.password);
-  List<String> a = ['B01', 'B02', 'B03'];
 
   @override
   Widget build(BuildContext context) {
@@ -58,22 +58,22 @@ class _ScheduleState extends State<Schedule> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => Report(username: username,password: password)
+                                builder: (context) => Driver(username: username,password: password)
                             ),
                           );
                         },
-                        child: const MenuAcceleratorLabel('&Report'),
+                        child: const MenuAcceleratorLabel('&Manage Driver'),
                       ),
                       MenuItemButton(
                         onPressed: () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => Driver(username: username,password: password)
+                                builder: (context) => Setting(username: username,password: password)
                             ),
                           );
                         },
-                        child: const MenuAcceleratorLabel('&Manage Driver'),
+                        child: const MenuAcceleratorLabel('Setting'),
                       ),
                       MenuItemButton(
                         onPressed: () => showDialog<String>(
@@ -101,19 +101,6 @@ class _ScheduleState extends State<Schedule> {
                         ),
                         child: const MenuAcceleratorLabel('&Logout'),
                       ),
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: MenuItemButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => Setting(username: username,password: password)
-                              ),
-                            );
-                          },
-                          child: const MenuAcceleratorLabel('Setting'),
-                        ),),
                     ],
 
                   ),
@@ -148,29 +135,50 @@ class _ScheduleState extends State<Schedule> {
                         );
 
                         if (newDate == null) return;
-                        setState(() {
-                          dates = newDate;
-                          dateController.text =
-                          "${dates.year} - ${dates.month} - ${dates.day}";
-                          Timestamp timeStamp = Timestamp.fromDate(dates);
-                          String timeStamps = timeStamp.toString();
-                        });
+
+                        else
+                          setState(() {
+                            dates = newDate;
+                            date1 = dateController.text =
+                            "${dates.year} - ${dates.month} - ${dates.day}";
+
+
+                          });
+                        /*StreamBuilder<List<bin>>(
+                          stream: readBin(newDate.toString()),
+                          builder: (context,snapshot) {
+                            if (snapshot.hasError) {
+                              return Text("Something went wrong! ${snapshot.error}");
+                            }
+                            else if (snapshot.hasData) {
+                              final bins = snapshot.data!;
+
+                              return  Container(
+                                height: 400,
+
+                                child: ListView(
+                                  children: bins.map(buildbin).toList(),
+                                ),
+                              );
+                            } else if(!snapshot.hasData){
+                              return Text("no data");
+                            } else {
+                              return Center(child: CircularProgressIndicator());
+                            }
+                          },
+                        );*/
+
                       },
                       child: Icon(Icons.calendar_today))
 
                 ],
-              ),),
+              ),
+            ),
 
-            /*Padding(padding: const EdgeInsets.all(20.0),
-            child: ReorderableListView(
-                children: children,
-                onReorder: onReorder)
-              ,
-            ),*/
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: StreamBuilder<List<bin>>(
-                stream: readBin(),
+                stream: readBin(dates.toString()),
                 builder: (context,snapshot) {
                   if (snapshot.hasError) {
                     return Text("Something went wrong! ${snapshot.error}");
@@ -185,63 +193,32 @@ class _ScheduleState extends State<Schedule> {
                           children: bins.map(buildbin).toList(),
                       ),
                     );
+                  } else if(!snapshot.hasData){
+                      return Text("no data");
                   } else {
                     return Center(child: CircularProgressIndicator());
                   }
                 },
               ),
-            )
+            ),
           ],
+
         )
     );
   }
-
-  /*Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot) {
-    return ListView(
-        shrinkWrap: true,
-      padding: const EdgeInsets.only(top: 20.0),
-      children: snapshot.map((data) => _buildListItem(context, data)).toList(),
-    );
-  }
-
-  Widget _buildListItem(BuildContext context, DocumentSnapshot data) {
-    bin record = bin.fromSnapshot(data);
-    DateTime date1 = record.date.toDate();
-    String date2 = date1.toString();
-    int index = 0;
-    List<DateTime> date3 = [];
-    if(index < 5) {
-      bin record1;
-    }
-    
-    return Padding(
-      //key: ValueKey(record.date),
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-      
-      child: Container(
-        decoration: BoxDecoration(
-          border: Border.all(color: Colors.grey),
-          borderRadius: BorderRadius.circular(5.0),
-        ),
-        child: ListTile(
-                   title: Text(record.toString()),
-                  trailing: Text(record.location),
-                  //onTap: () => print(record),
-                 ),
-      ),
-    );*/
-
-
-  Widget buildbin(bin bin) =>
-        ListTile(
-          title: Text("${bin.date.year.toString()} - ${bin.date.month.toString()} - ${bin.date.day.toString()}"),
-          subtitle: Text(bin.latitude.toString()),
-
+  
+  Widget buildbin(bin bin){
+        return ListTile(
+          title: Text("${bin.id}"),
+          subtitle: Text("${bin.date}"),
+          //subtitle: Text(bin.latitude.toString()),
         );
 
-  Stream<List<bin>> readBin() =>
+  }
+
+  Stream<List<bin>> readBin(String a) =>
       FirebaseFirestore.instance
-          .collection('bin')
+          .collection('bin').where('date', isEqualTo: date1)
           .snapshots()
           .map((snapshot) =>
             snapshot.docs.map((doc) => bin.fromJson(doc.data())).toList());

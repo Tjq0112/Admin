@@ -3,17 +3,19 @@ import 'package:flutter/material.dart';
 
 class bin{
   //final String name;
-  final DateTime date;
-  final double latitude;
-  final String location_name;
+  final String date;
+  //final double latitude;
+  //final String location_name;
+  final String id;
   //final double longitude;
 
 
   //final DocumentReference reference;
   bin({
-    required this.date,
-    required this.latitude,
-    required this.location_name,
+   required this.date,
+    //required this.latitude,
+    //required this.location_name,
+    required this.id,
     //required this.longitude,
 
   });
@@ -37,10 +39,11 @@ class bin{
       //.snapshots().map((snapshot) => snapshot.docs.map((doc) => bin.fromJson(doc.data())).toList());
 
   static bin fromJson(Map<String, dynamic> json) => bin(
-    date: json['date'].toDate(),
-    latitude : json['latitude'],
-    location_name : json["location_name"],
+    date: json['date'].toString(),
+    //latitude : json['latitude'],
+    //location_name : json["location_name"],
     //longitude : json['longitude'],
+    id: json['id'],
 
   );
   @override

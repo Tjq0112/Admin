@@ -3,7 +3,6 @@ import 'package:admin/Schedule.dart';
 import 'package:flutter/material.dart';
 
 import 'Driver.dart';
-import 'Report.dart';
 import 'Setting.dart';
 
 class Menu extends StatefulWidget {
@@ -54,22 +53,22 @@ class _MenuState extends State<Menu> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => Report(username: username,password: password)
+                                builder: (context) => Driver(username: username,password: password)
                             ),
                           );
                         },
-                        child: const MenuAcceleratorLabel('&Report'),
+                        child: const MenuAcceleratorLabel('&Manage Driver'),
                       ),
                       MenuItemButton(
                         onPressed: () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => Driver(username: username,password: password)
+                                builder: (context) => Setting(username: username,password: password)
                             ),
                           );
                         },
-                        child: const MenuAcceleratorLabel('&Manage Driver'),
+                        child: const MenuAcceleratorLabel('Setting'),
                       ),
                       MenuItemButton(
                         onPressed: () => showDialog<String>(
@@ -97,19 +96,6 @@ class _MenuState extends State<Menu> {
                         ),
                         child: const MenuAcceleratorLabel('&Logout'),
                       ),
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: MenuItemButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => Setting(username: username,password: password)
-                              ),
-                            );
-                          },
-                          child: const MenuAcceleratorLabel('Setting'),
-                        ),),
                     ],
 
                   ),
