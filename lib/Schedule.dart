@@ -266,9 +266,9 @@ class _ScheduleState extends State<Schedule> {
                     TextButton(
                         onPressed: (){
                           String sequence = sequenceController.text;
-                          final editSequence = FirebaseFirestore.instance.collection('Pickup').doc('9S99aT2AZP7dRJ2swQqP');
-
+                          final editSequence = FirebaseFirestore.instance.collection('Pickup').doc(pickup.id);
                           editSequence.update({'sequence' : sequence});
+                          Text(pickup.id);
                         },
                         child: Text("Save"))
                   ],
