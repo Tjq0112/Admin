@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import 'Driver.dart';
 import 'Login.dart';
+import 'ManageDriver.dart';
 import 'Menu.dart';
 import 'Schedule.dart';
 
@@ -61,11 +62,22 @@ class _SettingState extends State<Setting> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => Driver(username: username,password: password)
+                                builder: (context) => ManageDriver(username: username,password: password)
                             ),
                           );
                         },
                         child: const MenuAcceleratorLabel('&Manage Driver'),
+                      ),
+                      MenuItemButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => Driver(username: username,password: password)
+                            ),
+                          );
+                        },
+                        child: const MenuAcceleratorLabel('&Add Driver'),
                       ),
                       MenuItemButton(
                         onPressed: () {

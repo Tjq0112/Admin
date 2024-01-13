@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 import 'Login.dart';
+import 'ManageDriver.dart';
 import 'Schedule.dart';
 import 'Setting.dart';
 
@@ -32,7 +33,7 @@ class _DriverState extends State<Driver> {
     return Scaffold(
         appBar: AppBar(
           title: new Center(
-              child: const Text('Manage Driver', style: TextStyle(fontSize: 50),)),
+              child: const Text('Add Driver', style: TextStyle(fontSize: 50),)),
           automaticallyImplyLeading: false,
         ),
         body:
@@ -60,11 +61,22 @@ class _DriverState extends State<Driver> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => Driver(username: username,password: password)
+                                builder: (context) => ManageDriver(username: username,password: password)
                             ),
                           );
                         },
                         child: const MenuAcceleratorLabel('&Manage Driver'),
+                      ),
+                      MenuItemButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => Driver(username: username,password: password)
+                            ),
+                          );
+                        },
+                        child: const MenuAcceleratorLabel('&Add Driver'),
                       ),
                       MenuItemButton(
                         onPressed: () {
@@ -172,6 +184,7 @@ class _DriverState extends State<Driver> {
                           String d_password = passwordController.text;
                           String d_icNumber = icController.text;
                           String d_phoneNumber = phoneNumberController.text;
+                          bool active = true;
 
                           final driver = Driver1(
                               d_name: d_name,
@@ -179,6 +192,7 @@ class _DriverState extends State<Driver> {
                               d_password: d_password,
                               d_icNumber: d_icNumber,
                               d_phoneNumber: d_phoneNumber,
+                              d_active: active,
                           );
 
                           createDriver(driver);
@@ -202,9 +216,55 @@ class _DriverState extends State<Driver> {
   }
   
   Future createDriver(Driver1 driver) async{
-    final docDriver = FirebaseFirestore.instance.collection('Driver').doc();
-    driver.id = docDriver.id;
+    String ids = " ";
+    CollectionReference collectionReference =
+    FirebaseFirestore.instance.collection('Driver');
 
+    QuerySnapshot querySnapshot = await collectionReference.get();
+    int numberOfDocuments = querySnapshot.size;
+
+    if (numberOfDocuments == 0) {
+      print('Collection is empty.');
+      String leading = "D";
+      String formattedInteger = numberOfDocuments.toString().padLeft(5, '0');
+      ids = "$leading${formattedInteger}1";
+    } else {
+      print('Collection is not empty.');
+      String leading = "D";
+      int idplacholder = 0;
+
+      // Access the latest document
+      QuerySnapshot latestDocument = await FirebaseFirestore.instance
+          .collection('Driver')
+          .orderBy('id', descending: true)
+          .limit(1)
+          .get();
+
+      DocumentSnapshot latestData = latestDocument.docs.first;
+      Map<String, dynamic> data = latestData.data() as Map<String, dynamic>;
+
+      String latestID = data['id'];
+      print(latestID);
+
+      // Detect integer from String id, assign to a variable,
+      // Increase the variable value by 1
+      // Combine with leading variable to create new ID
+      RegExp regExp = RegExp(r'\d+');
+      Match? match = regExp.firstMatch(latestID);
+
+      if (match != null) {
+        String numericPartString = match.group(0)!;
+        idplacholder = int.parse(numericPartString) + 1;
+      } else {
+        print('No numeric part found in the id.');
+      }
+
+      String formattedInteger = idplacholder.toString().padLeft(3, '0');
+      ids = leading + formattedInteger;
+      print(ids);
+      driver.id = ids;
+    }
+    final docDriver = FirebaseFirestore.instance.collection('Driver').doc(driver.id);
     final json = driver.toJson();
     await docDriver.set(json);
 
@@ -214,6 +274,5 @@ class _DriverState extends State<Driver> {
 
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
-
 
 }
