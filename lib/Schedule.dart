@@ -1,11 +1,13 @@
 import 'package:admin/model/Pickup.dart';
 import 'package:admin/model/Schedule1.dart';
+import 'package:admin/model/driver1.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:admin/model/bin.dart';
 import 'Driver.dart';
 import 'Login.dart';
+import 'ManageDriver.dart';
 import 'Setting.dart';
 
 class Schedule extends StatefulWidget {
@@ -25,7 +27,7 @@ class _ScheduleState extends State<Schedule> {
   String username;
   String password;
   final TextEditingController sequenceController = TextEditingController();
-
+  final TextEditingController driverController = TextEditingController();
   _ScheduleState(this.username,this.password);
 
   @override
@@ -61,11 +63,22 @@ class _ScheduleState extends State<Schedule> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => Driver(username: username,password: password)
+                                builder: (context) => ManageDriver(username: username,password: password)
                             ),
                           );
                         },
                         child: const MenuAcceleratorLabel('&Manage Driver'),
+                      ),
+                      MenuItemButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => Driver(username: username,password: password)
+                            ),
+                          );
+                        },
+                        child: const MenuAcceleratorLabel('&Add Driver'),
                       ),
                       MenuItemButton(
                         onPressed: () {
@@ -112,7 +125,7 @@ class _ScheduleState extends State<Schedule> {
               ],
             ),
 
-            Padding(
+            /*Padding(
               padding: const EdgeInsets.all(20.0),
               child: Row(
                 children: [
@@ -141,6 +154,11 @@ class _ScheduleState extends State<Schedule> {
 
                         else
                           setState(() {
+                            String weekday = " ";
+                            if(dates.weekday == 1)
+                              weekday = "Monday";
+                            else if(dates.weekday == 1)
+                              weekday = "Tuesday";
                             dates = newDate;
                             date1 = dateController.text =
                             "${dates.year} - ${dates.month} - ${dates.day}";
@@ -172,105 +190,129 @@ class _ScheduleState extends State<Schedule> {
                         );*/
 
                       },
-                      child: Icon(Icons.calendar_today))
-
-                ],
-              ),
-            ),
-
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: StreamBuilder<List<Schedule1>>(
-                stream: readSchedule(date1),
-                builder: (context,snapshot) {
-                  if (snapshot.hasError) {
-                    return Text("Something went wrong! ${snapshot.error}");
-                  }
-                  else if (snapshot.hasData) {
-                    final schedules = snapshot.data!;
-                    List<Schedule1> schedule1 = schedules.toList();
-                    return  Container(
-                      height: 200,
-                      child: ListView.builder(
-                        // Let the ListView know how many items it needs to build.
-                        itemCount: schedule1.length,
-                        // Provide a builder function. This is where the magic happens.
-                        // Convert each item into a widget based on the type of item it is.
-                        itemBuilder: (context, index) {
-                          final item = schedule1[index];
-
-                          return StreamBuilder<List<Pickup>>(
-                      stream: readPickup(item.id),
+                      child: Icon(Icons.calendar_today)
+                  ),
+                  /*Padding(
+                      padding: EdgeInsets.all(8.0),
+                    child: StreamBuilder<List<Driver1>>(
+                      stream: readDriver(),
                       builder: (context,snapshot) {
                         if (snapshot.hasError) {
                           return Text("Something went wrong! ${snapshot.error}");
                         }
                         else if (snapshot.hasData) {
-                          final pickups = snapshot.data!;
-
+                          final drivers = snapshot.data!;
+                          List<Driver1> driver= drivers.toList();
+                          Driver1? selectedItem = driver[0];
+                          //return drivers.map(buildDriver).toList();
                           return Container(
-                            height: 400,
+                            child: ListView.builder(
+                                itemCount: driver.length,
+                                itemBuilder: (context, index){
+                                  final item = driver[index];
 
-                            child: ListView(
-                              children: pickups.map(buildPickup).toList(),
-                            ),
-                          );
-                        } else if(!snapshot.hasData){
+                                  return DropdownButton<Driver1>(
+                                      value: selectedItem,
+                                      items: driver.map((item) => DropdownMenuItem(
+                                        child: Text(item.d_name),
+                                      ))
+                                      onChanged: onChanged
+                                  ),
+                                }
+                            )
+
+                          )
+                        }
+                        else if(!snapshot.hasData){
                           return Text("no data");
                         } else {
                           return Center(child: CircularProgressIndicator());
                         }
                       },
-                    );
-                        },
-                      ),
-                    );
+                    ),
+                  )*/
 
-                    /*Container(
+                ],
+              ),
+            ),*/
+            Column(
+              children: [
+                Text("Click on the list tile to assign driver.")
+              ],
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: StreamBuilder<List<Pickup>>(
+                stream: readPickup(date1),
+                builder: (context,snapshot) {
+                  if (snapshot.hasError) {
+                    return Text("Something went wrong! ${snapshot.error}");
+                  }
+                  else if (snapshot.hasData) {
+                    final pickups = snapshot.data!;
+
+                    return Container(
                       height: 400,
 
                       child: ListView(
-                          children: schedules.map(buildSchedule).toList(),
+                        children: pickups.map(buildPickup).toList(),
                       ),
-                    );*/
+                    );
                   } else if(!snapshot.hasData){
-                      return Text("no data");
+                    return Text("no data");
                   } else {
                     return Center(child: CircularProgressIndicator());
                   }
                 },
-              ),
+              )
             ),
           ],
 
         )
     );
   }
-  
+  /*Widget buildDriver(Driver1 driver){
+    return DropdownMenu<Driver1>(
+        dropdownMenuEntries: driver.d_name,
+    );
+  }*/
+
   Widget buildPickup(Pickup pickup){
         return ListTile(
-          title: Text("${pickup.bin_Id}"),
-          subtitle: Text("${pickup.status}"),
+          title: Text("${pickup.id}"),
+          subtitle: Text("${pickup.date}"),
+
           onTap: (){
+            driverController.text = pickup.driver_Id;
             showDialog(
                 context: context,
                 builder: (context) => AlertDialog(
-                  title: Text("Enter sequence"),
+                  title: Text("Assign to : "),
                   content: TextField(
-                    controller: sequenceController,
+                    controller: driverController,
                     decoration: const InputDecoration(
-                      labelText: 'sequence',
+                      labelText: 'Driver Id',
                     ),
                   ),
                   actions: [
                     TextButton(
                         onPressed: (){
-                          String sequence = sequenceController.text;
-                          final editSequence = FirebaseFirestore.instance.collection('Pickup').doc(pickup.id);
-                          editSequence.update({'sequence' : sequence});
+                          String driver_Id = driverController.text;
+                          final editSequence = FirebaseFirestore.instance.collection('Schedule').doc(pickup.id);
+                          editSequence.update({'driver_Id' : driver_Id});
                           Text(pickup.id);
+                          const snackBar = SnackBar(
+                            content: Text("Successfully assigned to driver"),
+                          );
+
+                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
                         },
-                        child: Text("Save"))
+                        child: Text("Save")
+                    ),
+                    TextButton(
+                      onPressed: () => Navigator.pop(context, 'Cancel'),
+                      child: const Text('Cancel'),
+                    ),
                   ],
                 )
             );
@@ -286,12 +328,51 @@ class _ScheduleState extends State<Schedule> {
           .map((snapshot) =>
             snapshot.docs.map((doc) => Schedule1.fromJson(doc.data())).toList());
 
-  Stream<List<Pickup>> readPickup(String b) =>
+  Stream<List<Pickup>> readPickup(String a) =>
       FirebaseFirestore.instance
-          .collection('Pickup').where('schedule_Id', isEqualTo: b)
+          .collection('Schedule').where('status', isEqualTo: false)
           .snapshots()
           .map((snapshot) =>
           snapshot.docs.map((doc) => Pickup.fromJson(doc.data())).toList());
 
+  Stream<List<Driver1>> readDriver() =>
+      FirebaseFirestore.instance
+          .collection('Driver').where('active', isEqualTo: true)
+          .snapshots()
+          .map((snapshot) =>
+          snapshot.docs.map((doc) => Driver1.fromJson(doc.data())).toList());
+
+
+
 }
+
+/*enum DriverList{
+  StreamBuilder<List<Driver1>>(
+    stream: readDriver(),
+    builder: (context,snapshot) {
+      /*if (snapshot.hasError) {
+        return Text("Something went wrong! ${snapshot.error}");
+      }
+      else if (snapshot.hasData) {*/
+        final drivers = snapshot.data!;
+        List<Driver1> driver= drivers.toList();
+        final item = driver[index];
+        return item;
+      /*}
+      else if(!snapshot.hasData){
+        return Text("no data");
+      } else {
+        return Center(child: CircularProgressIndicator());
+      }*/
+    },
+  ),
+
+  Stream<List<Driver1>> readDriver() =>
+    FirebaseFirestore.instance
+        .collection('Driver').where('active', isEqualTo: true)
+        .snapshots()
+        .map((snapshot) =>
+        snapshot.docs.map((doc) => Driver1.fromJson(doc.data())).toList());
+
+}*/
 

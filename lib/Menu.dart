@@ -115,8 +115,15 @@ class _MenuState extends State<Menu> {
                 ),
               ],
             ),
+            Center(
+              child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                child: Image.asset('assets/wasteCollect.png'),
+              ),
+            )
           ],
-        )
+        ),
+       
     );
   }
 }
