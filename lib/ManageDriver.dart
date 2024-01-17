@@ -137,6 +137,12 @@ class _ManageDriverState extends State<ManageDriver> {
               ),
             ],
           ),
+          Column(
+            children: [
+              Text("Click on the tick icon to change driver status.",
+                style: TextStyle(fontSize: 30),)
+            ],
+          ),
           Padding(
             padding: const EdgeInsets.all(20.0),
             child: StreamBuilder<List<Driver1>>(
