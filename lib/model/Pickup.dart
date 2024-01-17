@@ -6,7 +6,7 @@ class Pickup{
   String driver_Id;
 
   Pickup({
-    required this.id,
+    this.id = " ",
     required this.bin_Id,
     required this.date,
     required this.status,

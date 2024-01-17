@@ -2,12 +2,15 @@ import 'package:admin/model/Pickup.dart';
 import 'package:admin/model/Schedule1.dart';
 import 'package:admin/model/driver1.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
+
+ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:admin/model/bin.dart';
 import 'Driver.dart';
+import 'Fixed.dart';
 import 'Login.dart';
 import 'ManageDriver.dart';
+import 'MapPage.dart';
 import 'Setting.dart';
 
 class Schedule extends StatefulWidget {
@@ -35,7 +38,7 @@ class _ScheduleState extends State<Schedule> {
     return Scaffold(
         appBar: AppBar(
           title: new Center(
-              child: const Text('Schedule', style: TextStyle(fontSize: 50),)),
+              child: const Text('Demand Pickup', style: TextStyle(fontSize: 50),)),
           automaticallyImplyLeading: false,
         ),
         body:
@@ -52,11 +55,22 @@ class _ScheduleState extends State<Schedule> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
+                                builder: (context) => Fixed(username: username,password: password)
+                            ),
+                          );
+                        },
+                        child: const MenuAcceleratorLabel('&Fixed'),
+                      ),
+                      MenuItemButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
                                 builder: (context) => Schedule(username: username,password: password)
                             ),
                           );
                         },
-                        child: const MenuAcceleratorLabel('&Schedule'),
+                        child: const MenuAcceleratorLabel('&Demand'),
                       ),
                       MenuItemButton(
                         onPressed: () {
@@ -79,6 +93,15 @@ class _ScheduleState extends State<Schedule> {
                           );
                         },
                         child: const MenuAcceleratorLabel('&Add Driver'),
+                      ),
+                      MenuItemButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => MapPage()), // Add this line for MapPage navigation
+                          );
+                        },
+                        child: const MenuAcceleratorLabel('&Map'),
                       ),
                       MenuItemButton(
                         onPressed: () {
@@ -237,13 +260,14 @@ class _ScheduleState extends State<Schedule> {
             ),*/
             Column(
               children: [
-                Text("Click on the list tile to assign driver.")
+                Text("Click on the list tile to assign driver.",
+                  style: TextStyle(fontSize: 30),)
               ],
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: StreamBuilder<List<Pickup>>(
-                stream: readPickup(date1),
+                stream: readPickup(),
                 builder: (context,snapshot) {
                   if (snapshot.hasError) {
                     return Text("Something went wrong! ${snapshot.error}");
@@ -279,9 +303,10 @@ class _ScheduleState extends State<Schedule> {
 
   Widget buildPickup(Pickup pickup){
         return ListTile(
-          title: Text("${pickup.id}"),
-          subtitle: Text("${pickup.date}"),
 
+          title: Text("Pickup Id: ${pickup.id}"),
+          subtitle: Text("Bin Id: ${pickup.bin_Id}""\nDemand Date: ${pickup.date}"),
+          isThreeLine: true,
           onTap: (){
             driverController.text = pickup.driver_Id;
             showDialog(
@@ -328,7 +353,7 @@ class _ScheduleState extends State<Schedule> {
           .map((snapshot) =>
             snapshot.docs.map((doc) => Schedule1.fromJson(doc.data())).toList());
 
-  Stream<List<Pickup>> readPickup(String a) =>
+  Stream<List<Pickup>> readPickup() =>
       FirebaseFirestore.instance
           .collection('Schedule').where('status', isEqualTo: false)
           .snapshots()

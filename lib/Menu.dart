@@ -1,9 +1,11 @@
+import 'package:admin/Fixed.dart';
 import 'package:admin/Login.dart';
 import 'package:admin/Schedule.dart';
 import 'package:flutter/material.dart';
 
 import 'Driver.dart';
 import 'ManageDriver.dart';
+import 'MapPage.dart';
 import 'Setting.dart';
 
 class Menu extends StatefulWidget {
@@ -43,11 +45,22 @@ class _MenuState extends State<Menu> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
+                                builder: (context) => Fixed(username: username,password: password)
+                            ),
+                          );
+                        },
+                        child: const MenuAcceleratorLabel('&Fixed'),
+                      ),
+                      MenuItemButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
                                 builder: (context) => Schedule(username: username,password: password)
                             ),
                           );
                         },
-                        child: const MenuAcceleratorLabel('&Schedule'),
+                        child: const MenuAcceleratorLabel('&Demand'),
                       ),
                       MenuItemButton(
                         onPressed: () {
@@ -70,6 +83,15 @@ class _MenuState extends State<Menu> {
                           );
                         },
                         child: const MenuAcceleratorLabel('&Add Driver'),
+                      ),
+                      MenuItemButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => MapPage()), // Add this line for MapPage navigation
+                          );
+                        },
+                        child: const MenuAcceleratorLabel('&Map'),
                       ),
                       MenuItemButton(
                         onPressed: () {
