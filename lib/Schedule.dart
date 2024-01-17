@@ -304,7 +304,7 @@ class _ScheduleState extends State<Schedule> {
   Widget buildPickup(Pickup pickup){
         return ListTile(
 
-          title: Text("Pickup Id: ${pickup.id}"),
+          title: Text("Pickup Id: ${pickup.id} (${pickup.type})"),
           subtitle: Text("Bin Id: ${pickup.bin_Id}""\nDemand Date: ${pickup.date}"),
           isThreeLine: true,
           onTap: (){

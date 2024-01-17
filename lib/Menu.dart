@@ -28,7 +28,7 @@ class _MenuState extends State<Menu> {
     return Scaffold(
         appBar: AppBar(
             title: new Center(
-                child: const Text('Main Menu', style: TextStyle(fontSize: 50),)),
+                child: const Text('Main Menu', style: TextStyle(fontSize: 50),),),
           automaticallyImplyLeading: false,
         ),
         body:

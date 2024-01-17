@@ -207,10 +207,11 @@ class _FixedState extends State<Fixed> {
               String driver = driverController.text;
 
               final schedule = Pickup(
-                  bin_Id: "Fixed" ,
+                  bin_Id: "B00005" ,
                   date: date1,
                   status: false,
-                  driver_Id: driver
+                  driver_Id: driver,
+                type: "Fixed"
               );
 
               createSchedule(schedule);
