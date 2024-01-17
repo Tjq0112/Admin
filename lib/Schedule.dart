@@ -340,8 +340,15 @@ class _ScheduleState extends State<Schedule> {
                     ),
                   ],
                 )
+
             );
           },
+          shape: Border(
+              top: BorderSide(),
+              bottom: BorderSide(),
+              left: BorderSide(),
+              right: BorderSide()
+          ),
         );
 
   }

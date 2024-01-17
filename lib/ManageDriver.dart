@@ -203,7 +203,14 @@ class _ManageDriverState extends State<ManageDriver> {
               });
             }
           },
-          icon: driver1.d_active ? Icon(Icons.check_circle) : Icon(Icons.check_circle_outline))
+          icon: driver1.d_active ? Icon(Icons.check_circle) : Icon(Icons.check_circle_outline)
+      ),
+      shape: Border(
+        top: BorderSide(),
+        bottom: BorderSide(),
+        left: BorderSide(),
+        right: BorderSide()
+      ),
     );
   }
 }
